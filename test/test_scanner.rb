@@ -6,7 +6,7 @@ class TestScanner < Minitest::Test
 
   def test_tokenize
     test_line = " 	SimpleTest foo  "
-    assert_equal [1,"SimpleTest","foo"], Scanner.tokenize( test_line, 1 )
+    assert_equal ["SimpleTest","foo"], Scanner.tokenize( test_line )
   end
 
   def test_shave_token
@@ -36,16 +36,19 @@ class TestScanner < Minitest::Test
   end
 
   def test_tag_tokens
-    tokenized_line = [1,"SimpleTest","foo"]
-    assert_equal [1, [:slot_name, "SimpleTest"], [:slot_name, "foo"]], Scanner.tag_tokens( tokenized_line )
-    tokenized_line = [2,"[main]","SomeSlotName","(3)"]
-    assert_equal [2, [:obj_name, "main"], [:slot_name, "SomeSlotName"], [:math_exp, "3"]], Scanner.tag_tokens( tokenized_line )
+    tokenized_line = ["SimpleTest","foo"]
+    assert_equal [[:slot_name, "SimpleTest"], [:slot_name, "foo"]], Scanner.tag_tokens( tokenized_line )
+    tokenized_line = ["[main]","SomeSlotName","(3)"]
+    assert_equal [[:obj_name, "main"], [:slot_name, "SomeSlotName"], [:math_exp, "3"]], Scanner.tag_tokens( tokenized_line )
   end
 
   def test_scan_line
-    line =  "L > SlotName SlotNameorValue SlotNameorValue "
-    test_array = [3, [:stack_symbol], [:branch_symbol], [:slot_name, "SlotName"], [:slot_name, "SlotNameorValue"], [:slot_name, "SlotNameorValue"]]
-    assert_equal test_array, Scanner.scan_line( line, 3 )
+    line = "L > SlotName SlotNameorValue SlotNameorValue "
+    test_array = [[:stack_symbol], [:branch_symbol], [:slot_name, "SlotName"], [:slot_name, "SlotNameorValue"], [:slot_name, "SlotNameorValue"]]
+    assert_equal test_array, Scanner.scan_line( line )
+    line = "    [main]     \n   string \"foo\""
+    test_array = [[:obj_name, "main"], [:slot_name, "string"], [:string_lit, "foo"]]
+    assert_equal test_array, Scanner.scan_line( line )
   end
 
 end

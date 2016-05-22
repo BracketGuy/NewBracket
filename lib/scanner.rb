@@ -1,8 +1,7 @@
 module Scanner
 
-  def Scanner.tokenize(line_text,line_number)
+  def Scanner.tokenize(line_text)
     final_array = []
-    final_array.push line_number
     line = line_text.split(' ')
     line.map! { |line| final_array.push line } 
     return final_array
@@ -45,18 +44,14 @@ module Scanner
 
   def Scanner.tag_tokens(line)
     final_array = []
-    line.each_with_index do |value,index|
-      if index == 0
-        final_array.push value
-      else
-        final_array.push Scanner.id_token(value)
-      end
+    line.each do |value|
+      final_array.push Scanner.id_token(value)
     end
     return final_array
   end
 
-  def Scanner.scan_line(line, line_number)
-    tokenized_line = Scanner.tokenize(line, line_number)
+  def Scanner.scan_line(line)
+    tokenized_line = Scanner.tokenize(line)
     taged_line = Scanner.tag_tokens(tokenized_line)
   end
  
