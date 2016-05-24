@@ -33,6 +33,8 @@ class TestScanner < Minitest::Test
     assert_equal [:stack_symbol], Scanner.id_token( test_token )
     test_token = ">"
     assert_equal [:branch_symbol], Scanner.id_token( test_token )
+    test_token = "."
+    assert_equal [:term_symbol], Scanner.id_token( test_token )
   end
 
   def test_tag_tokens
@@ -43,11 +45,12 @@ class TestScanner < Minitest::Test
   end
 
   def test_scan_line
-    line = "L > SlotName SlotNameorValue SlotNameorValue "
-    test_array = [[:stack_symbol], [:branch_symbol], [:slot_name, "SlotName"], [:slot_name, "SlotNameorValue"], [:slot_name, "SlotNameorValue"]]
+    line = "L > SlotName SlotNameorValue SlotNameorValue ."
+    test_array = [[:stack_symbol], [:branch_symbol], [:slot_name, "SlotName"], [:slot_name, "SlotNameorValue"], 
+                  [:slot_name, "SlotNameorValue"], [:term_symbol]]
     assert_equal test_array, Scanner.scan_line( line )
     line = "    [main]     \n   string \"foo\""
-    test_array = [[:obj_name, "main"], [:slot_name, "string"], [:string_lit, "foo"]]
+    test_array = [[:obj_name, "main"], [:slot_name, "string"], [:string_lit, "foo"], [:term_symbol]]
     assert_equal test_array, Scanner.scan_line( line )
   end
 

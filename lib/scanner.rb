@@ -28,6 +28,8 @@ module Scanner
       final_array.push :stack_symbol
     elsif token == ">"
       final_array.push :branch_symbol
+    elsif token == "."
+      final_array.push :term_symbol
     else
       final_array.push :slot_name
       if token.include? ?/
@@ -52,7 +54,11 @@ module Scanner
 
   def Scanner.scan_line(line)
     tokenized_line = Scanner.tokenize(line)
-    taged_line = Scanner.tag_tokens(tokenized_line)
+    tagged_line = Scanner.tag_tokens(tokenized_line)
+    unless tagged_line.last == [:term_symbol]
+      tagged_line.push [:term_symbol]
+    end
+    return tagged_line
   end
  
 end
