@@ -61,4 +61,39 @@ module Parser
     return output_array
   end
 
+  def Parser.seperate_variables( source )
+    output_array = []
+    math_string = ""
+    variable_string = ""
+    in_var = false
+    source.strip!
+    source.each_char do |char|
+      if char =~ /[a-zA-Z]/ && in_var == false
+        variable_string << char
+        in_var = true
+        unless math_string == ""
+          output_array.push math_string
+          math_string = ""
+        end
+      elsif char =~ /[a-zA-Z]/ && in_var == true
+        variable_string << char
+      elsif char !~ /[a-zA-Z]/ && in_var == true
+        math_string << char
+        in_var = false
+        unless variable_string == ""
+          output_array.push variable_string
+          variable_string = ""
+        end
+      elsif char !~ /[a-zA-Z]/ && in_var == false
+        math_string << char
+      end
+    end
+    if source[-1, 1] =~ /[a-zA-Z]/
+      output_array.push variable_string
+    else
+      output_array.push math_string
+    end
+    return output_array
+  end
+
 end
