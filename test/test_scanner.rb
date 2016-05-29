@@ -7,12 +7,10 @@ class TestScanner < Minitest::Test
   def test_tokenize
     test_line = " 	SimpleTest foo  "
     assert_equal ["SimpleTest","foo"], Scanner.tokenize( test_line )
-
-    # Need a function called from tokenize that removes whitespace from inside
-    # math expressions. Although, how does that work for quotes?
-
-    #test_line = " 	SimpleTest ( 4 + 5 )"
-    #assert_equal ["SimpleTest","( 4 + 5 )"], Scanner.tokenize( test_line )
+    test_line = " 	SimpleTest ( 4 + 5 )"
+    assert_equal ["SimpleTest","( 4 + 5 )"], Scanner.tokenize( test_line )
+    test_line = " 	SimpleTest \"string\""
+    assert_equal ["SimpleTest","\"string\""], Scanner.tokenize( test_line )
   end
 
   def test_shave_token

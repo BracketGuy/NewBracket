@@ -1,10 +1,64 @@
 module Scanner
 
-  def Scanner.tokenize(line_text)
-    final_array = []
-    line = line_text.split(' ')
-    line.map! { |line| final_array.push line } 
-    return final_array
+  def Scanner.tokenize(input_string)
+    output_array = []
+    output_string = ""
+    in_whitespace = false
+    in_math_exp = false
+    in_string_lit = false
+    input_string.each_char do |char|
+      if char == "(" && in_math_exp == false
+        in_math_exp = true
+        unless output_string == ""
+          output_array.push output_string
+          output_string = ""
+        end
+        output_string << char
+      elsif char == ")" && in_math_exp == true
+        in_math_exp = false
+        output_string << char
+        unless output_string == ""
+          output_array.push output_string
+          output_string = ""
+        end
+      elsif char == "\"" && in_math_exp == true
+        raise "A double quote can never occur within a math expression!"
+      elsif in_math_exp == true
+        output_string << char
+      elsif char == "\"" && in_string_lit == false
+        in_string_lit = true
+        unless output_string == ""
+          output_array.push output_string
+          output_string = ""
+        end
+        output_string << char
+      elsif char == "\"" && in_string_lit == true
+        in_string_lit = false
+        output_string << char
+        unless output_string == ""
+          output_array.push output_string
+          output_string = ""
+        end
+      elsif in_string_lit == true
+        output_string << char
+      elsif char =~ /\s/ && in_whitespace == false
+        in_whitespace = true
+        unless output_string == ""
+          output_array.push output_string
+          output_string = ""
+        end
+      elsif char !~ /\s/ && in_whitespace == true
+        in_whitespace = false
+        output_string << char
+      elsif char !~ /\s/ && in_whitespace == false
+        output_string << char
+      end
+    end
+    unless output_string == ""
+      output_array.push output_string
+      output_string = ""
+    end
+    return output_array
   end
 
   def Scanner.shave_token(token, symbol)
