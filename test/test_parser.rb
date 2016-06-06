@@ -49,4 +49,32 @@ class TestParser < Minitest::Test
     assert_equal seperated, Parser.seperate_variables( unseperated )
   end
 
+  def test_show_vals_needed_for_math
+    #Takes an already-seperated math expression.
+    math_exp = ["2 + 4 + ", "foo", " - 45 * 4.5 + ", "Bar"]
+    #And tells us which values we are going to need to lookup in the object system.
+    needed_vals = ["foo","Bar"]
+    assert_equal needed_vals, Parser.show_vals_needed_for_math( math_exp )
+  end
+
+  def test_replace_math_vals
+    math_exp = ["2 + 4 + ", "foo", " - 45 * 4.5 + ", "Bar"]
+    needed_vals = ["foo","Bar"]
+    vals = ["3","5"]
+    # replace_math_vals takes a math expression and two arrays of identical length. The first is
+    # a list of value names and the second is the values for each of those.
+    assert_equal ["2 + 4 + ", "3", " - 45 * 4.5 + ", "5"], Parser.replace_math_vals( math_exp, needed_vals, vals )
+  end
+
+  def test_math_integration_test
+    unseperated = "2 + foo + 3 + Bar"
+    math_exp = Parser.seperate_variables( unseperated )
+    needed_vals = Parser.show_vals_needed_for_math( math_exp )
+    #This is a placeholder for when we have real lookups in the object system:
+    vals = ["3","2"]
+    to_eval = Parser.replace_math_vals( math_exp, needed_vals, vals )
+    #this is basicly how the interpreter will work:
+    assert_equal 10, eval(to_eval.join)
+  end
+
 end

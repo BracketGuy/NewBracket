@@ -96,4 +96,24 @@ module Parser
     return output_array
   end
 
+  def Parser.show_vals_needed_for_math( math_exp )
+    output_array = []
+    math_exp.each do |exp_part|
+      if exp_part[0] =~ /[a-zA-Z]/
+        output_array.push exp_part
+      end
+    end
+    return output_array
+  end
+
+  def Parser.replace_math_vals( math_exp, needed_vals, vals )
+    math_exp.each_with_index do |text,place_in_exp|
+      needed_vals.each_with_index do |val_name,index|
+        if val_name == text
+          math_exp[place_in_exp] = vals[index]
+        end
+      end
+    end
+  end
+
 end
