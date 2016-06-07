@@ -42,19 +42,15 @@ module Parser
     output_array = []
     source.each do |object|
       this_object = []
+      slot_token_buffer = []
       object.each_with_index do |token,index|
         if index == 0
           this_object.push token
         else
-          
-          # MAGIC!!!!!
-
-          # Magic call to parse_slot for each chunk of slot tokens goes here.
-          
-          # MAGIC!!!!!
-
+          slot_token_buffer.push token
         end
       end
+      this_object.push Parser.parse_slot( slot_token_buffer )
       output_array.push this_object
       this_object = []
     end
